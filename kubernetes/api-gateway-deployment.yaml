@@ -17,6 +17,7 @@ spec:
         app.kubernetes.io/name: api-gateway
         app.kubernetes.io/part-of: cake-delight
     spec:
+      enableServiceLinks: false
       containers:
         - name: api-gateway
           image: akashgupta2233/cake-delight-api-gateway:v1.0.0

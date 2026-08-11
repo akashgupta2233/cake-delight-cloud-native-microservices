@@ -17,6 +17,7 @@ spec:
         app.kubernetes.io/name: frontend
         app.kubernetes.io/part-of: cake-delight
     spec:
+      enableServiceLinks: false
       containers:
         - name: frontend
           image: akashgupta2233/cake-delight-frontend:v1.0.0

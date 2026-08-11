@@ -17,6 +17,7 @@ spec:
         app.kubernetes.io/name: rating-service
         app.kubernetes.io/part-of: cake-delight
     spec:
+      enableServiceLinks: false
       containers:
         - name: rating-service
           image: akashgupta2233/cake-delight-rating-service:v1.0.0
