@@ -1,0 +1,167 @@
+version: '3.8'
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USERNAME:-guest}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-guest}
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "status"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+
+  catalog-db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: catalog_db
+      POSTGRES_USER: ${DB_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+    volumes:
+      - catalog-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-postgres} -d catalog_db || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  order-db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: order_db
+      POSTGRES_USER: ${DB_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+    volumes:
+      - order-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-postgres} -d order_db || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  rating-db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: rating_db
+      POSTGRES_USER: ${DB_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+    volumes:
+      - rating-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-postgres} -d rating_db || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  notification-db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: notification_db
+      POSTGRES_USER: ${DB_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+    volumes:
+      - notification-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-postgres} -d notification_db || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  catalog-service:
+    build:
+      context: ./catalog-service
+      dockerfile: Dockerfile
+    environment:
+      CATALOG_DB_HOST: catalog-db
+      DB_USERNAME: ${DB_USERNAME:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+    depends_on:
+      - catalog-db
+    ports:
+      - "8082:8082"
+
+  order-service:
+    build:
+      context: ./order-service
+      dockerfile: Dockerfile
+    environment:
+      ORDER_DB_HOST: order-db
+      DB_USERNAME: ${DB_USERNAME:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_USERNAME: ${RABBITMQ_USERNAME:-guest}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD:-guest}
+    depends_on:
+      - order-db
+      - rabbitmq
+    ports:
+      - "8083:8083"
+
+  rating-service:
+    build:
+      context: ./rating-service
+      dockerfile: Dockerfile
+    environment:
+      RATING_DB_HOST: rating-db
+      DB_USERNAME: ${DB_USERNAME:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+    depends_on:
+      - rating-db
+    ports:
+      - "8084:8084"
+
+  notification-service:
+    build:
+      context: ./notification-service
+      dockerfile: Dockerfile
+    environment:
+      NOTIFICATION_DB_HOST: notification-db
+      DB_USERNAME: ${DB_USERNAME:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_USERNAME: ${RABBITMQ_USERNAME:-guest}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD:-guest}
+    depends_on:
+      - notification-db
+      - rabbitmq
+    ports:
+      - "8085:8085"
+
+  api-gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    depends_on:
+      - catalog-service
+      - order-service
+      - rating-service
+      - notification-service
+    ports:
+      - "8080:8080"
+    environment:
+      # Gateway talks to services via Docker DNS (service names).
+      CATALOG_SERVICE_HOST: catalog-service
+      ORDER_SERVICE_HOST: order-service
+      RATING_SERVICE_HOST: rating-service
+      NOTIFICATION_SERVICE_HOST: notification-service
+      SPRING_PROFILES_ACTIVE: docker
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    depends_on:
+      - api-gateway
+    ports:
+      - "5173:80"
+
+volumes:
+  catalog-data:
+  order-data:
+  rating-data:
+  notification-data:
