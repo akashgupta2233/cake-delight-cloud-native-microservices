@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rating-service
+  namespace: cake-delight
+  labels:
+    app.kubernetes.io/name: rating-service
+    app.kubernetes.io/part-of: cake-delight
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: rating-service
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: rating-service
+        app.kubernetes.io/part-of: cake-delight
+    spec:
+      containers:
+        - name: rating-service
+          image: akashgupta2233/cake-delight-rating-service:v1.0.0
+          ports:
+            - containerPort: 8084
+              name: http
+          envFrom:
+            - configMapRef:
+                name: database-hosts
+            - secretRef:
+                name: database-credentials
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 20
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 40
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
