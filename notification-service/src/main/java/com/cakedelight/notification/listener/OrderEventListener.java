@@ -7,6 +7,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
+/**
+ * RabbitMQ listener for order-related events.
+ * Consumes order completed events and triggers notification creation.
+ */
 @Component
 public class OrderEventListener {
 
@@ -17,6 +21,12 @@ public class OrderEventListener {
         this.notificationService = notificationService;
     }
 
+    /**
+     * Handles order completed events from RabbitMQ queue.
+     * Creates and persists notification record.
+     *
+     * @param event the order completed event
+     */
     @RabbitListener(queues = "notification.queue")
     public void handleOrderCompleted(OrderCompletedEvent event) {
         notificationService.createNotificationFromEvent(event);

@@ -8,6 +8,10 @@ import org.springframework.stereotype.Repository;
 import java.math.BigDecimal;
 import java.util.List;
 
+/**
+ * Repository interface for cake data access.
+ * Provides query methods for filtering cakes by category and price.
+ */
 @Repository
 public interface CakeRepository extends JpaRepository<Cake, Long> {
 

@@ -11,6 +11,10 @@ import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * RabbitMQ configuration for publishing order events.
+ * Sets up exchange, message converter, and RabbitTemplate for event publishing.
+ */
 @Configuration
 public class RabbitMQConfig {
 

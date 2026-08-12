@@ -12,6 +12,10 @@ import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * RabbitMQ configuration for consuming order events.
+ * Sets up queue, exchange, binding, and message converter for event consumption.
+ */
 @Configuration
 public class RabbitMQConfig {
 

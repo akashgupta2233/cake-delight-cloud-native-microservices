@@ -12,6 +12,10 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 
+/**
+ * Entity representing a line item within a customer order.
+ * Stores cake details, pricing, and quantity at the time of purchase.
+ */
 @Entity
 @Table(name = "order_items")
 @Getter

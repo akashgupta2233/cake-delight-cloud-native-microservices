@@ -7,6 +7,10 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Repository interface for basket item data access.
+ * Provides methods for managing shopping basket items.
+ */
 @Repository
 public interface BasketItemRepository extends JpaRepository<BasketItem, Long> {
 

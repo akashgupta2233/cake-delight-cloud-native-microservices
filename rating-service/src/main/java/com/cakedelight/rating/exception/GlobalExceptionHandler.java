@@ -12,9 +12,22 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Global exception handler for the Rating Service.
+ * Handles validation errors and unexpected exceptions across all controllers.
+ */
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
+    /**
+     * Handles validation errors from request body validation.
+     *
+     * @param ex the validation exception
+     * @param headers HTTP headers
+     * @param status HTTP status
+     * @param request the web request
+     * @return response with field-level error messages
+     */
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
                                                                   HttpHeaders headers,
@@ -27,6 +40,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.badRequest().body(errors);
     }
 
+    /**
+     * Handles all uncaught exceptions.
+     *
+     * @param ex the exception
+     * @return response with error message
+     */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleAll(Exception ex) {
         Map<String, String> m = new HashMap<>();

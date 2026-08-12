@@ -5,6 +5,9 @@ import com.cakedelight.notification.event.OrderCompletedEvent;
 
 import java.util.List;
 
+/**
+ * Service interface for notification operations.
+ */
 public interface NotificationService {
     Notification createNotificationFromEvent(OrderCompletedEvent event);
 

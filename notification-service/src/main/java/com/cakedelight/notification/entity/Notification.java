@@ -5,6 +5,10 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
+/**
+ * Entity representing a notification triggered by system events.
+ * Stores notification messages and delivery status.
+ */
 @Entity
 @Table(name = "notifications")
 @Data

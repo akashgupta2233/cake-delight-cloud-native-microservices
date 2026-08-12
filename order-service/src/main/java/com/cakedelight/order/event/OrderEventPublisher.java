@@ -6,6 +6,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
 
+/**
+ * Publisher component for order-related events.
+ * Publishes events to RabbitMQ exchange for downstream processing.
+ */
 @Component
 public class OrderEventPublisher {
 
@@ -16,6 +20,12 @@ public class OrderEventPublisher {
         this.rabbitTemplate = rabbitTemplate;
     }
 
+    /**
+     * Publishes order completed event to message broker.
+     * Failures are logged but do not interrupt checkout flow.
+     *
+     * @param event the order completed event
+     */
     public void publishOrderCompleted(OrderCompletedEvent event) {
         try {
             rabbitTemplate.convertAndSend(RabbitMQConfig.ORDER_EXCHANGE,

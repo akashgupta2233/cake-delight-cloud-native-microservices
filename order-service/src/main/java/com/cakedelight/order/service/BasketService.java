@@ -7,6 +7,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Service layer for shopping basket management.
+ * Handles adding, updating, and removing items from the basket.
+ */
 @Service
 public class BasketService {
 
@@ -16,6 +20,12 @@ public class BasketService {
         this.basketItemRepository = basketItemRepository;
     }
 
+    /**
+     * Creates a new basket item or increments quantity if cake already exists in basket.
+     *
+     * @param item the basket item to create
+     * @return the created or updated basket item
+     */
     public BasketItem create(BasketItem item) {
         return basketItemRepository.findByCakeId(item.getCakeId())
                 .map(existing -> {

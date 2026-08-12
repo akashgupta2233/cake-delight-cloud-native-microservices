@@ -10,6 +10,10 @@ import org.springframework.util.StringUtils;
 import java.math.BigDecimal;
 import java.util.List;
 
+/**
+ * Service layer for cake catalog business logic.
+ * Handles filtering, searching, and CRUD operations for cakes.
+ */
 @Service
 public class CakeService {
 
@@ -19,6 +23,15 @@ public class CakeService {
         this.cakeRepository = cakeRepository;
     }
 
+    /**
+     * Finds cakes based on dynamic filtering criteria.
+     * Supports filtering by category and price range in various combinations.
+     *
+     * @param category optional category filter
+     * @param minPrice optional minimum price
+     * @param maxPrice optional maximum price
+     * @return filtered list of cakes
+     */
     public List<Cake> findCakes(String category, BigDecimal minPrice, BigDecimal maxPrice) {
         boolean hasCategory = StringUtils.hasText(category);
         boolean hasMin = minPrice != null;
@@ -48,11 +61,23 @@ public class CakeService {
         return cakeRepository.findAll();
     }
 
+    /**
+     * Finds a cake by ID or throws exception if not found.
+     *
+     * @param id the cake identifier
+     * @return the cake entity
+     */
     public Cake findById(Long id) {
         return cakeRepository.findById(id)
                 .orElseThrow(() -> new CakeNotFoundException(id));
     }
 
+    /**
+     * Creates a new cake ensuring default values are set.
+     *
+     * @param cake the cake to create
+     * @return the persisted cake entity
+     */
     public Cake createCake(Cake cake) {
         cake.setId(null);
         if (cake.getAvailability() == null) {

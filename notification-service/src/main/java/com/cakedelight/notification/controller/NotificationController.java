@@ -8,6 +8,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ * REST controller for notification operations.
+ * Provides endpoints for retrieving notification history.
+ */
 @RestController
 @RequestMapping("/notifications")
 public class NotificationController {
@@ -18,6 +22,11 @@ public class NotificationController {
         this.notificationService = notificationService;
     }
 
+    /**
+     * Retrieves all notifications.
+     *
+     * @return list of all notifications
+     */
     @GetMapping
     public List<Notification> getAllNotifications() {
         return notificationService.getAllNotifications();

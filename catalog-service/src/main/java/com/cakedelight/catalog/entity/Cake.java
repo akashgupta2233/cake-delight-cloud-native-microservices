@@ -12,6 +12,10 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 
+/**
+ * Entity representing a cake in the catalog.
+ * Contains product details, pricing, and availability status.
+ */
 @Entity
 @Table(name = "cakes")
 @Getter

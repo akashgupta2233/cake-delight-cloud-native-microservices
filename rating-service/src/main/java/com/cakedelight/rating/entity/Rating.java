@@ -8,6 +8,10 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
+/**
+ * Entity representing a customer rating for a cake.
+ * Contains rating value (1-5 stars) and optional review text.
+ */
 @Entity
 @Table(name = "ratings")
 @Data

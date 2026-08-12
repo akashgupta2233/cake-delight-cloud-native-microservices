@@ -11,6 +11,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * REST controller for cake rating operations.
+ * Provides endpoints for submitting reviews and retrieving rating statistics.
+ */
 @RestController
 @RequestMapping("/ratings")
 public class RatingController {
@@ -21,18 +25,36 @@ public class RatingController {
         this.ratingService = ratingService;
     }
 
+    /**
+     * Submits a new rating for a cake.
+     *
+     * @param rating the rating data
+     * @return the created rating
+     */
     @PostMapping
     public ResponseEntity<Rating> createRating(@Valid @RequestBody Rating rating) {
         Rating saved = ratingService.createRating(rating);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
+    /**
+     * Retrieves all ratings for a specific cake.
+     *
+     * @param cakeId the cake identifier
+     * @return list of ratings for the cake
+     */
     @GetMapping("/cake/{cakeId}")
     public ResponseEntity<List<Rating>> getRatingsByCakeId(@PathVariable Long cakeId) {
         List<Rating> list = ratingService.getRatingsByCakeId(cakeId);
         return ResponseEntity.ok(list);
     }
 
+    /**
+     * Calculates and retrieves the average rating for a specific cake.
+     *
+     * @param cakeId the cake identifier
+     * @return average rating rounded to 2 decimal places
+     */
     @GetMapping("/cake/{cakeId}/average")
     public ResponseEntity<Map<String, Object>> getAverage(@PathVariable Long cakeId) {
         double avg = ratingService.getAverageRating(cakeId);

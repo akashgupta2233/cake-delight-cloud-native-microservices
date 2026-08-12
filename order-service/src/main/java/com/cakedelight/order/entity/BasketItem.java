@@ -12,6 +12,10 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 
+/**
+ * Entity representing an item in the shopping basket.
+ * Stores cake details and quantity before checkout.
+ */
 @Entity
 @Table(name = "basket_items")
 @Getter

@@ -4,6 +4,9 @@ import com.cakedelight.rating.entity.Rating;
 
 import java.util.List;
 
+/**
+ * Service interface for rating operations.
+ */
 public interface RatingService {
     Rating createRating(Rating rating);
     List<Rating> getRatingsByCakeId(Long cakeId);

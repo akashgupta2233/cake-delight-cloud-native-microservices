@@ -20,6 +20,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Service layer for order processing.
+ * Handles checkout flow including order creation, event publishing, and basket clearing.
+ */
 @Service
 public class OrderService {
 
@@ -40,6 +44,13 @@ public class OrderService {
         this.orderEventPublisher = orderEventPublisher;
     }
 
+    /**
+     * Processes checkout by creating an order from basket items.
+     * Calculates total, creates order and order items, publishes event, and clears basket.
+     *
+     * @return the created customer order
+     * @throws ResponseStatusException if basket is empty
+     */
     @Transactional
     public CustomerOrder checkout() {
         List<BasketItem> items = basketItemRepository.findAll();

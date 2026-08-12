@@ -8,6 +8,10 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.OptionalDouble;
 
+/**
+ * Service implementation for rating management.
+ * Handles rating creation, retrieval, and average calculation.
+ */
 @Service
 public class RatingServiceImpl implements RatingService {
 
@@ -27,6 +31,12 @@ public class RatingServiceImpl implements RatingService {
         return ratingRepository.findByCakeId(cakeId);
     }
 
+    /**
+     * Calculates the average rating for a specific cake.
+     *
+     * @param cakeId the cake identifier
+     * @return average rating value, or 0.0 if no ratings exist
+     */
     @Override
     public double getAverageRating(Long cakeId) {
         List<Rating> list = ratingRepository.findByCakeId(cakeId);

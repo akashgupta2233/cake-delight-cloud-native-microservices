@@ -10,6 +10,10 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+/**
+ * Entity representing a completed customer order.
+ * Contains order summary including total amount and status.
+ */
 @Entity
 @Table(name = "customer_orders")
 @Getter

@@ -9,6 +9,10 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Seeds the database with sample cake data on application startup.
+ * Runs only if the database is empty.
+ */
 @Component
 public class DataSeeder implements CommandLineRunner {
 
