@@ -95,134 +95,21 @@ For example, `GET /api/catalog/cakes` is forwarded by the gateway to the Catalog
 
 ## Monitoring
 
-Cake Delight uses **Spring Boot Actuator** for lightweight monitoring and health checks across all microservices. Actuator provides production-ready features for monitoring and managing applications, enabling real-time insights into service health, database connectivity, and messaging system status.
+Cake Delight uses **Spring Boot Actuator** for microservice health checks and diagnostic endpoints.
 
 ### Exposed Endpoints
 
-The following actuator endpoints are exposed on all backend services:
-
-- **`/actuator/health`** - Comprehensive health status including database and RabbitMQ connectivity
-- **`/actuator/info`** - Application information and metadata
+- `/actuator/health` – Comprehensive health status (DB, RabbitMQ, disk space)
+- `/actuator/info` – Application metadata
 
 ### Configuration
 
-All microservices are configured with the following actuator properties:
+Add the following properties to `application.properties`:
 
 ```properties
 management.endpoints.web.exposure.include=health,info
 management.endpoint.health.show-details=always
 ```
-
-This configuration:
-- Exposes only the `health` and `info` endpoints for security
-- Shows detailed health information including component-level status
-- Provides visibility into database connections, disk space, and messaging broker health
-
-### Benefits
-
-- **Service Health Monitoring** - Real-time status of all microservices
-- **Database Connectivity Verification** - PostgreSQL connection health for each service
-- **RabbitMQ Connectivity Verification** - Message broker health for Order and Notification services
-- **Runtime Diagnostics** - Disk space, memory, and application status
-- **Kubernetes Deployment Validation** - Health checks for pod readiness and liveness probes
-
-### Testing Actuator Endpoints
-
-You can verify actuator endpoints locally or in Kubernetes:
-
-**Local Testing:**
-```bash
-# Catalog Service
-curl http://localhost:8082/actuator/health
-
-# Order Service
-curl http://localhost:8083/actuator/health
-
-# Rating Service
-curl http://localhost:8084/actuator/health
-
-# Notification Service
-curl http://localhost:8085/actuator/health
-
-# API Gateway
-curl http://localhost:8080/actuator/health
-```
-
-**Kubernetes Testing:**
-```bash
-# Port-forward to a service
-kubectl port-forward -n cake-delight deployment/catalog-service 8082:8082
-
-# Test the health endpoint
-curl http://localhost:8082/actuator/health
-```
-
-### Sample Health Response
-
-```json
-{
-  "status": "UP",
-  "components": {
-    "db": {
-      "status": "UP",
-      "details": {
-        "database": "PostgreSQL",
-        "validationQuery": "isValid()"
-      }
-    },
-    "diskSpace": {
-      "status": "UP",
-      "details": {
-        "total": 499963174912,
-        "free": 400000000000,
-        "threshold": 10485760,
-        "exists": true
-      }
-    },
-    "ping": {
-      "status": "UP"
-    },
-    "rabbit": {
-      "status": "UP",
-      "details": {
-        "version": "3.13.0"
-      }
-    }
-  }
-}
-```
-
-### Services with Actuator Enabled
-
-All backend microservices include Spring Boot Actuator:
-
-- ✅ **API Gateway** - `http://localhost:8080/actuator/health`
-- ✅ **Catalog Service** - `http://localhost:8082/actuator/health`
-- ✅ **Order Service** - `http://localhost:8083/actuator/health`
-- ✅ **Rating Service** - `http://localhost:8084/actuator/health`
-- ✅ **Notification Service** - `http://localhost:8085/actuator/health`
-
-### Integration with Kubernetes
-
-Actuator health endpoints can be integrated with Kubernetes health probes for automated pod management:
-
-```yaml
-readinessProbe:
-  httpGet:
-    path: /actuator/health
-    port: http
-  initialDelaySeconds: 20
-  periodSeconds: 10
-
-livenessProbe:
-  httpGet:
-    path: /actuator/health
-    port: http
-  initialDelaySeconds: 40
-  periodSeconds: 20
-```
-
-This ensures that Kubernetes only routes traffic to healthy pods and automatically restarts pods that fail health checks.
 
 ## Dockerization
 
