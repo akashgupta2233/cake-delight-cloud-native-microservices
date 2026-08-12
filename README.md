@@ -47,6 +47,7 @@ Each backend service is independently deployable and owns its own PostgreSQL dat
 | Frontend | React, Vite, Axios |
 | Data | PostgreSQL, Spring Data JPA, Hibernate |
 | Messaging | RabbitMQ, Spring AMQP |
+| Monitoring | Spring Boot Actuator |
 | Containers | Docker, multi-stage Dockerfiles |
 | Orchestration | Kubernetes, Minikube |
 | Deployment | Docker Hub images, Kubernetes Deployments, Services, PVCs, ConfigMaps, Secrets |
@@ -75,6 +76,8 @@ cake-delight/
 - Consume order events and display notifications.
 - Create and view cake ratings.
 - Route all backend API requests through a single API Gateway.
+- Spring Boot Actuator monitoring for health checks and observability.
+- Service health endpoint monitoring for database and RabbitMQ connectivity.
 - Run locally with Docker Compose or deploy to Kubernetes.
 
 ## API Gateway Routing
@@ -89,6 +92,137 @@ The frontend communicates with the API Gateway. The gateway forwards requests to
 | `/api/notifications/**` | Notification Service |
 
 For example, `GET /api/catalog/cakes` is forwarded by the gateway to the Catalog Service `GET /cakes` endpoint.
+
+## Monitoring
+
+Cake Delight uses **Spring Boot Actuator** for lightweight monitoring and health checks across all microservices. Actuator provides production-ready features for monitoring and managing applications, enabling real-time insights into service health, database connectivity, and messaging system status.
+
+### Exposed Endpoints
+
+The following actuator endpoints are exposed on all backend services:
+
+- **`/actuator/health`** - Comprehensive health status including database and RabbitMQ connectivity
+- **`/actuator/info`** - Application information and metadata
+
+### Configuration
+
+All microservices are configured with the following actuator properties:
+
+```properties
+management.endpoints.web.exposure.include=health,info
+management.endpoint.health.show-details=always
+```
+
+This configuration:
+- Exposes only the `health` and `info` endpoints for security
+- Shows detailed health information including component-level status
+- Provides visibility into database connections, disk space, and messaging broker health
+
+### Benefits
+
+- **Service Health Monitoring** - Real-time status of all microservices
+- **Database Connectivity Verification** - PostgreSQL connection health for each service
+- **RabbitMQ Connectivity Verification** - Message broker health for Order and Notification services
+- **Runtime Diagnostics** - Disk space, memory, and application status
+- **Kubernetes Deployment Validation** - Health checks for pod readiness and liveness probes
+
+### Testing Actuator Endpoints
+
+You can verify actuator endpoints locally or in Kubernetes:
+
+**Local Testing:**
+```bash
+# Catalog Service
+curl http://localhost:8082/actuator/health
+
+# Order Service
+curl http://localhost:8083/actuator/health
+
+# Rating Service
+curl http://localhost:8084/actuator/health
+
+# Notification Service
+curl http://localhost:8085/actuator/health
+
+# API Gateway
+curl http://localhost:8080/actuator/health
+```
+
+**Kubernetes Testing:**
+```bash
+# Port-forward to a service
+kubectl port-forward -n cake-delight deployment/catalog-service 8082:8082
+
+# Test the health endpoint
+curl http://localhost:8082/actuator/health
+```
+
+### Sample Health Response
+
+```json
+{
+  "status": "UP",
+  "components": {
+    "db": {
+      "status": "UP",
+      "details": {
+        "database": "PostgreSQL",
+        "validationQuery": "isValid()"
+      }
+    },
+    "diskSpace": {
+      "status": "UP",
+      "details": {
+        "total": 499963174912,
+        "free": 400000000000,
+        "threshold": 10485760,
+        "exists": true
+      }
+    },
+    "ping": {
+      "status": "UP"
+    },
+    "rabbit": {
+      "status": "UP",
+      "details": {
+        "version": "3.13.0"
+      }
+    }
+  }
+}
+```
+
+### Services with Actuator Enabled
+
+All backend microservices include Spring Boot Actuator:
+
+- ✅ **API Gateway** - `http://localhost:8080/actuator/health`
+- ✅ **Catalog Service** - `http://localhost:8082/actuator/health`
+- ✅ **Order Service** - `http://localhost:8083/actuator/health`
+- ✅ **Rating Service** - `http://localhost:8084/actuator/health`
+- ✅ **Notification Service** - `http://localhost:8085/actuator/health`
+
+### Integration with Kubernetes
+
+Actuator health endpoints can be integrated with Kubernetes health probes for automated pod management:
+
+```yaml
+readinessProbe:
+  httpGet:
+    path: /actuator/health
+    port: http
+  initialDelaySeconds: 20
+  periodSeconds: 10
+
+livenessProbe:
+  httpGet:
+    path: /actuator/health
+    port: http
+  initialDelaySeconds: 40
+  periodSeconds: 20
+```
+
+This ensures that Kubernetes only routes traffic to healthy pods and automatically restarts pods that fail health checks.
 
 ## Dockerization
 
@@ -247,16 +381,19 @@ This section demonstrates that all Kubernetes deployments are healthy with `1/1`
 
 - Add user authentication and authorization.
 - Add an Ingress controller with TLS for production-style routing.
-- Add observability with centralized logs, metrics, and distributed tracing.
+- Expand observability with centralized logs, metrics dashboards (Prometheus/Grafana), and distributed tracing.
 - Add database migrations with Flyway or Liquibase.
 - Add CI/CD pipelines for image builds, tests, and Kubernetes deployment.
 - Add autoscaling and production resource tuning.
+- Enhance actuator with custom health indicators and metrics.
 
 ## Learning Outcomes
 
 - Designing a database-per-service microservices architecture.
 - Building synchronous REST communication through an API Gateway.
 - Implementing asynchronous communication with RabbitMQ.
+- Implementing Spring Boot Actuator for service monitoring and health checks.
+- Monitoring database and messaging connectivity with actuator endpoints.
 - Containerizing Java and React applications with multi-stage Docker builds.
 - Managing application configuration with Kubernetes ConfigMaps and Secrets.
 - Deploying stateful PostgreSQL workloads with PersistentVolumeClaims.
@@ -264,4 +401,4 @@ This section demonstrates that all Kubernetes deployments are healthy with `1/1`
 
 ## Conclusion
 
-Cake Delight demonstrates an end-to-end cloud-native microservices workflow: independently deployable Spring Boot services, asynchronous messaging, isolated data stores, a React frontend, Docker image delivery, and Kubernetes orchestration. It provides a practical foundation for understanding how modern distributed applications are designed, deployed, and operated.
+Cake Delight demonstrates an end-to-end cloud-native microservices workflow: independently deployable Spring Boot services with built-in monitoring via Spring Boot Actuator, asynchronous messaging, isolated data stores, a React frontend, Docker image delivery, and Kubernetes orchestration. It provides a practical foundation for understanding how modern distributed applications are designed, monitored, deployed, and operated.
