@@ -221,15 +221,27 @@ Successful deployment evidence should show:
 
 ## Screenshots
 
-Add project screenshots to an `images/` directory and replace these placeholders.
+## 1. Application Catalog & Pod Status
 
-| Screen | Placeholder |
-|---|---|
-| Catalog | `![Catalog](images/catalog.png)` |
-| Basket | `![Basket](images/basket.png)` |
-| Checkout | `![Checkout](images/checkout.png)` |
-| Notifications | `![Notifications](images/notifications.png)` |
-| Kubernetes Pods | `![Kubernetes Pods](images/kubernetes-pods.png)` |
+The terminal output below verifies that all microservice pods (including Catalog, Order, Rating, Notification, RabbitMQ, and Frontend) are scheduled and running in the `cake-delight` namespace. The browser highlights the live Catalog UI rendering items dynamically from the Catalog microservice.
+
+<img width="100%" alt="Catalog UI and Pod Status" src="https://github.com/user-attachments/assets/a1ac48cb-edd7-4bb4-8168-2c58c0cc299f" />
+
+---
+
+## 2. Kubernetes Services & Port Forwarding
+
+The screenshot displays the configured ClusterIP and NodePort services (`kubectl get svc -n cake-delight`). The frontend application is exposed via NodePort on `192.168.49.2:30081`, routing traffic through the API gateway and displaying live data on the Ratings page.
+
+<img width="100%" alt="Ratings UI and Services Status" src="https://github.com/user-attachments/assets/9f00a86b-63ec-46c9-bc14-a21c355a6b9f" />
+
+---
+
+## 3. Workload Deployments & Event Notifications
+
+This section demonstrates that all Kubernetes deployments are healthy with `1/1` replicas ready (`kubectl get deployments -n cake-delight`). The browser view verifies the asynchronous event-driven Notification microservice responding to placed orders.
+
+<img width="100%" alt="Notifications UI and Deployments Status" src="https://github.com/user-attachments/assets/7e086469-26a3-40d1-8cef-4bfedaac54f2" />
 
 ## Future Enhancements
 
