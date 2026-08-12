@@ -17,12 +17,19 @@ public class BasketService {
     }
 
     public BasketItem create(BasketItem item) {
-        item.setId(null);
-        return basketItemRepository.save(item);
+        return basketItemRepository.findByCakeId(item.getCakeId())
+                .map(existing -> {
+                    existing.setQuantity(existing.getQuantity() + 1);
+                    return basketItemRepository.save(existing);
+                })
+                .orElseGet(() -> {
+                    item.setId(null);
+                    return basketItemRepository.save(item);
+                });
     }
 
     public List<BasketItem> findAll() {
-        return basketItemRepository.findAll();
+        return basketItemRepository.findAllByOrderByIdAsc();
     }
 
     public BasketItem findById(Long id) {
@@ -31,9 +38,6 @@ public class BasketService {
 
     public BasketItem update(Long id, BasketItem payload) {
         BasketItem existing = findById(id);
-        existing.setCakeId(payload.getCakeId());
-        existing.setCakeName(payload.getCakeName());
-        existing.setPrice(payload.getPrice());
         existing.setQuantity(payload.getQuantity());
         return basketItemRepository.save(existing);
     }
