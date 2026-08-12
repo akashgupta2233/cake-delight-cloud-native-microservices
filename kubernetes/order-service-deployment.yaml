@@ -20,7 +20,7 @@ spec:
       enableServiceLinks: false
       containers:
         - name: order-service
-          image: akashgupta2233/cake-delight-order-service:v1.0.1
+          image: akashgupta2233/cake-delight-order-service:v1.0.2
           ports:
             - containerPort: 8083
               name: http

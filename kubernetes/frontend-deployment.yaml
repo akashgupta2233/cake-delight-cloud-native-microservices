@@ -20,7 +20,7 @@ spec:
       enableServiceLinks: false
       containers:
         - name: frontend
-          image: akashgupta2233/cake-delight-frontend:v1.0.1
+          image: akashgupta2233/cake-delight-frontend:v1.0.2
           ports:
             - containerPort: 80
               name: http

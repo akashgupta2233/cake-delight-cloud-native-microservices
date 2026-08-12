@@ -20,7 +20,7 @@ spec:
       enableServiceLinks: false
       containers:
         - name: api-gateway
-          image: akashgupta2233/cake-delight-api-gateway:v1.0.1
+          image: akashgupta2233/cake-delight-api-gateway:v1.0.2
           ports:
             - containerPort: 8080
               name: http
