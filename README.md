@@ -2,6 +2,11 @@
 
 Cake Delight is a cloud-native cake ordering application built as a Spring Boot microservices system with a React frontend. It demonstrates service separation, API gateway routing, asynchronous event-driven communication, database-per-service persistence, containerization, and deployment to Kubernetes with Minikube.
 
+## Repository & Source Code
+
+The complete source code and commit history for this project are hosted on GitHub:
+* **GitHub Repository:** [https://github.com/akashgupta2233/cake-delight-cloud-native-microservices](https://github.com/akashgupta2233/cake-delight-cloud-native-microservices)
+
 ## Architecture
 
 ```text
