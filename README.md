@@ -273,7 +273,7 @@ This section demonstrates that all Kubernetes deployments are healthy with `1/1`
 
 The terminal window confirms that all Persistent Volume Claims (`kubectl get pvc -n cake-delight`) for the microservice databases (`catalog-db-pvc`, `notification-db-pvc`, `order-db-pvc`, and `rating-db-pvc`) are in a `Bound` status with `ReadWriteOnce` access. The browser interface displays the Basket view of the application, rendering selected items and quantities ready for checkout.
 
-<img width="100%" alt="Basket UI and PVC Status" src="https://github.com/user-attachments/assets/2cc1d75f-8ff9-4cc8-ab50-603487297fe2" />
+<img width="100%" alt="Basket UI and PVC Status" src="https://github.com/user-attachments/assets/8d53dda4-cbd7-4e69-b5a9-e7622c48ffc2" />
 
 ## Future Enhancements
 
