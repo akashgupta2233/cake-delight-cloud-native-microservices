@@ -1000,15 +1000,6 @@ curl http://192.168.49.2:30080/api/catalog/cakes
 
 ---
 
-## Additional Resources
-
-- **Source Code**: [GitHub Repository]
-- **Docker Images**: [Docker Hub - akashgupta2233](https://hub.docker.com/u/akashgupta2233)
-- **Architecture Documentation**: See `README.md`
-- **Kubernetes Manifests**: See `kubernetes/` directory
-
----
-
 **Last Updated**: 2026-08-13  
 **API Version**: 1.0.2  
 **Documentation Version**: 1.0.0
